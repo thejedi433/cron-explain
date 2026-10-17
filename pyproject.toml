@@ -1,0 +1,28 @@
+[project]
+name = "cron-explain"
+version = "0.1.0"
+description = "Translate cron expressions to human-readable English"
+readme = "README.md"
+authors = [
+    { name = "thejedi433", email = "thejedi433@outlook.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+cron-explain = "cron_explain.__main__:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.coverage.run]
+omit = [
+    "src/*/__main__.py",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]
