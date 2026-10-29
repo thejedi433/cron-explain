@@ -203,46 +203,37 @@ class TestDowName:
 
 
 class TestCLI:
-    def test_help(self):
+    """End-to-end CLI tests via subprocess.
+
+    Uses sys.executable (the interpreter running pytest, i.e. the project venv)
+    instead of a hardcoded machine path, so the suite runs anywhere.
+    """
+
+    def _run(self, *args):
         import subprocess
-        result = subprocess.run(
-            ["uv", "run", "python", "-m", "cron_explain", "--help"],
-            cwd="/home/jrodin/projects/cron-explain",
+        import sys
+        return subprocess.run(
+            [sys.executable, "-m", "cron_explain", *args],
             capture_output=True,
             text=True
         )
+
+    def test_help(self):
+        result = self._run("--help")
         assert result.returncode == 0
         assert "Usage:" in result.stdout
 
     def test_valid_expression(self):
-        import subprocess
-        result = subprocess.run(
-            ["uv", "run", "python", "-m", "cron_explain", "0 9 * * *"],
-            cwd="/home/jrodin/projects/cron-explain",
-            capture_output=True,
-            text=True
-        )
+        result = self._run("0 9 * * *")
         assert result.returncode == 0
         assert "09:00" in result.stdout
 
     def test_invalid_expression(self):
-        import subprocess
-        result = subprocess.run(
-            ["uv", "run", "python", "-m", "cron_explain", "* *"],
-            cwd="/home/jrodin/projects/cron-explain",
-            capture_output=True,
-            text=True
-        )
+        result = self._run("* *")
         assert result.returncode == 2
         assert "Error:" in result.stderr
 
     def test_no_args(self):
-        import subprocess
-        result = subprocess.run(
-            ["uv", "run", "python", "-m", "cron_explain"],
-            cwd="/home/jrodin/projects/cron-explain",
-            capture_output=True,
-            text=True
-        )
+        result = self._run()
         assert result.returncode == 1
         assert "Usage:" in result.stdout
