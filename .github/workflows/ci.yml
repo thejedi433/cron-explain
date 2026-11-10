@@ -25,7 +25,7 @@ jobs:
       run: uv python install ${{ matrix.python-version }}
 
     - name: Install dependencies
-      run: uv sync
+      run: uv sync --locked
 
     - name: Run tests with coverage
       run: uv run pytest --cov=src/cron_explain --cov-report=term-missing --cov-fail-under=100 -v
